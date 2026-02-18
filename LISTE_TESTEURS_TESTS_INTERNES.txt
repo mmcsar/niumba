@@ -1,0 +1,79 @@
+LISTE DE 12 TESTEURS POUR TESTS INTERNES - NIUMBA
+==================================================
+
+Instructions :
+1. Remplacez les exemples ci-dessous par de vraies adresses email
+2. Copiez-collez cette liste dans Google Play Console → Tests → Tests internes → Gérer les testeurs
+3. Ou créez une liste de testeurs et ajoutez ces emails
+
+LISTE DE TESTEURS (12 personnes)
+---------------------------------
+
+1. testeur1@exemple.com
+2. testeur2@exemple.com
+3. testeur3@exemple.com
+4. testeur4@exemple.com
+5. testeur5@exemple.com
+6. testeur6@exemple.com
+7. testeur7@exemple.com
+8. testeur8@exemple.com
+9. testeur9@exemple.com
+10. testeur10@exemple.com
+11. testeur11@exemple.com
+12. testeur12@exemple.com
+
+MODÈLE À REMPLIR
+----------------
+
+Remplacez "exemple.com" par de vraies adresses email :
+
+1. votre-email@exemple.com (Votre email principal)
+2. collegue1@exemple.com
+3. collegue2@exemple.com
+4. ami1@exemple.com
+5. ami2@exemple.com
+6. famille1@exemple.com
+7. famille2@exemple.com
+8. beta-testeur1@exemple.com
+9. beta-testeur2@exemple.com
+10. beta-testeur3@exemple.com
+11. beta-testeur4@exemple.com
+12. beta-testeur5@exemple.com
+
+EXEMPLE RÉEL (À ADAPTER)
+-------------------------
+
+1. mmcsal@gmail.com (Votre email)
+2. testeur.niumba1@gmail.com
+3. testeur.niumba2@gmail.com
+4. ami.proche@exemple.com
+5. collegue.dev@exemple.com
+6. beta.user1@exemple.com
+7. beta.user2@exemple.com
+8. beta.user3@exemple.com
+9. beta.user4@exemple.com
+10. beta.user5@exemple.com
+11. beta.user6@exemple.com
+12. beta.user7@exemple.com
+
+NOTES IMPORTANTES
+------------------
+
+- Les testeurs doivent avoir un compte Google
+- Ils recevront un email d'invitation
+- Ils devront accepter l'invitation pour accéder à l'application
+- Maximum 100 testeurs pour les tests internes
+- Vous pouvez ajouter/supprimer des testeurs à tout moment
+
+COMMENT UTILISER CETTE LISTE
+-----------------------------
+
+1. Ouvrez Google Play Console
+2. Allez dans "Tests" → "Tests internes"
+3. Cliquez sur "Créer une liste de testeurs" ou "Gérer les testeurs"
+4. Ajoutez les emails de cette liste (un par ligne ou séparés par des virgules)
+5. Enregistrez la liste
+6. Activez la release dans "Versions"
+
+
+

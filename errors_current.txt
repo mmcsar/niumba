@@ -1,0 +1,100 @@
+﻿src/config/integrations.ts(63,23): error TS2339: Property 'enabled' does not exist on type '{ enabled: boolean; apiKey: string; portalId: string; } | { enabled: boolean; apiKey: string; } | { enabled: boolean; projectId: string; apiKey: string; } | { enabled: boolean; businessNumber: string; } | { ...; }'.
+  Property 'enabled' does not exist on type '{ mixpanel: { enabled: boolean; token: string; }; googleAnalytics: { enabled: boolean; trackingId: string; }; }'.
+src/context/AuthContext.tsx(165,17): error TS2345: Argument of type 'Partial<{ id: string; email: string; full_name: string | null; phone: string | null; avatar_url: string | null; company_name: string | null; company_logo: string | null; role: UserRole; ... 8 more ...; updated_at: string; }>' is not assignable to parameter of type 'never'.
+src/hooks/useAuth.ts(72,71): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(values: never, options?: { count?: "exact" | "planned" | "estimated" | undefined; } | undefined): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "profiles", never, "POST">', gave the following error.
+    Argument of type '{ id: string; email: string; name: string; phone: string | undefined; role: string; language: string; }' is not assignable to parameter of type 'never'.
+  Overload 2 of 2, '(values: never[], options?: { count?: "exact" | "planned" | "estimated" | undefined; defaultToNull?: boolean | undefined; } | undefined): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "profiles", never, "POST">', gave the following error.
+    Object literal may only specify known properties, and 'id' does not exist in type 'never[]'.
+src/hooks/useAuth.ts(111,15): error TS2345: Argument of type 'Partial<{ id: string; email: string; full_name: string | null; phone: string | null; avatar_url: string | null; company_name: string | null; company_logo: string | null; role: UserRole; ... 8 more ...; updated_at: string; }>' is not assignable to parameter of type 'never'.
+src/hooks/useSavedProperties.ts(30,44): error TS2339: Property 'property_id' does not exist on type 'never'.
+src/hooks/useSavedProperties.ts(31,51): error TS2339: Property 'properties' does not exist on type 'never'.
+src/hooks/useSavedProperties.ts(77,14): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(values: never, options?: { count?: "exact" | "planned" | "estimated" | undefined; } | undefined): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "saved_properties", never, "POST">', gave the following error.
+    Argument of type '{ user_id: string; property_id: string; }' is not assignable to parameter of type 'never'.
+  Overload 2 of 2, '(values: never[], options?: { count?: "exact" | "planned" | "estimated" | undefined; defaultToNull?: boolean | undefined; } | undefined): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "saved_properties", never, "POST">', gave the following error.
+    Object literal may only specify known properties, and 'user_id' does not exist in type 'never[]'.
+src/navigation/index.tsx(158,9): error TS2322: Type 'FC<SearchScreenProps>' is not assignable to type 'ScreenComponentType<MainTabParamList, "Explore"> | undefined'.
+  Type 'FunctionComponent<SearchScreenProps>' is not assignable to type 'FunctionComponent<{}>'.
+    Property 'navigation' is missing in type '{}' but required in type 'SearchScreenProps'.
+src/navigation/index.tsx(295,46): error TS2322: Type 'FC<AdminPropertiesScreenProps>' is not assignable to type 'ScreenComponentType<RootStackParamList, "AdminProperties"> | undefined'.
+  Type 'FunctionComponent<AdminPropertiesScreenProps>' is not assignable to type 'FunctionComponent<{}>'.
+    Property 'navigation' is missing in type '{}' but required in type 'AdminPropertiesScreenProps'.
+src/screens/admin/AddPropertyScreen.tsx(130,59): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(values: never, options?: { count?: "exact" | "planned" | "estimated" | undefined; } | undefined): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "properties", never, "POST">', gave the following error.
+    Argument of type '{ owner_id: string; title: string; title_en: string; description: string; description_en: string; type: PropertyType; price_type: PriceType; price: number; address: string; ... 7 more ...; status: string; }' is not assignable to parameter of type 'never'.
+  Overload 2 of 2, '(values: never[], options?: { count?: "exact" | "planned" | "estimated" | undefined; defaultToNull?: boolean | undefined; } | undefined): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "properties", never, "POST">', gave the following error.
+    Object literal may only specify known properties, and 'owner_id' does not exist in type 'never[]'.
+src/screens/admin/AdminAgentsScreen.tsx(164,13): error TS2552: Cannot find name 'setAgents'. Did you mean 'agents'?
+src/screens/admin/AdminAgentsScreen.tsx(164,23): error TS7006: Parameter 'prev' implicitly has an 'any' type.
+src/screens/admin/AdminAgentsScreen.tsx(164,43): error TS7006: Parameter 'a' implicitly has an 'any' type.
+src/screens/admin/AdminAgentsScreen.tsx(216,12): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(values: never, options?: { count?: "exact" | "planned" | "estimated" | undefined; } | undefined): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "profiles", never, "POST">', gave the following error.
+    Argument of type '{ id: string; email: string; full_name: string; phone: string; role: string; }' is not assignable to parameter of type 'never'.
+  Overload 2 of 2, '(values: never[], options?: { count?: "exact" | "planned" | "estimated" | undefined; defaultToNull?: boolean | undefined; } | undefined): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "profiles", never, "POST">', gave the following error.
+    Object literal may only specify known properties, and 'id' does not exist in type 'never[]'.
+src/screens/admin/AdminAgentsScreen.tsx(236,32): error TS2339: Property 'id' does not exist on type 'never'.
+src/screens/admin/AdminAgentsScreen.tsx(237,11): error TS2322: Type 'string | null' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/screens/admin/AdminAgentsScreen.tsx(238,11): error TS2322: Type 'string | null' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/screens/admin/AdminAgentsScreen.tsx(239,11): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+src/screens/admin/AdminAgentsScreen.tsx(275,10): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(values: never, options?: { onConflict?: string | undefined; ignoreDuplicates?: boolean | undefined; count?: "exact" | "planned" | "estimated" | undefined; } | undefined): PostgrestFilterBuilder<{ ...; }, ... 5 more ..., "POST">', gave the following error.
+    Argument of type '{ id: string; email: string; full_name: string; phone: string; role: string; }' is not assignable to parameter of type 'never'.
+  Overload 2 of 2, '(values: never[], options?: { onConflict?: string | undefined; ignoreDuplicates?: boolean | undefined; count?: "exact" | "planned" | "estimated" | undefined; defaultToNull?: boolean | undefined; } | undefined): PostgrestFilterBuilder<...>', gave the following error.
+    Object literal may only specify known properties, and 'id' does not exist in type 'never[]'.
+src/screens/admin/AdminAgentsScreen.tsx(290,9): error TS2322: Type 'string | null' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/screens/admin/AdminAgentsScreen.tsx(291,9): error TS2322: Type 'string | null' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/screens/admin/AdminAgentsScreen.tsx(292,9): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+src/screens/admin/AdminAgentsScreen.tsx(638,58): error TS18048: 'selectedAgent.stats' is possibly 'undefined'.
+src/screens/admin/AdminAgentsScreen.tsx(642,58): error TS18048: 'selectedAgent.stats' is possibly 'undefined'.
+src/screens/admin/AdminAgentsScreen.tsx(646,58): error TS18048: 'selectedAgent.stats' is possibly 'undefined'.
+src/screens/admin/AdminAgentsScreen.tsx(650,58): error TS18048: 'selectedAgent.stats' is possibly 'undefined'.
+src/screens/admin/AdminAgentsScreen.tsx(662,22): error TS18047: 'selectedAgent.specializations' is possibly 'null'.
+src/screens/admin/AdminAgentsScreen.tsx(676,22): error TS18047: 'selectedAgent.regions' is possibly 'null'.
+src/screens/admin/AdminAppointmentsScreen.tsx(21,15): error TS2440: Import declaration conflicts with local declaration of 'Appointment'.
+src/screens/admin/AdminAppointmentsScreen.tsx(51,50): error TS2339: Property 'hasMore' does not exist on type '{ appointments: Appointment[]; loading: boolean; error: string | null; refresh: () => Promise<void>; }'.
+src/screens/admin/AdminAppointmentsScreen.tsx(51,59): error TS2339: Property 'loadMore' does not exist on type '{ appointments: Appointment[]; loading: boolean; error: string | null; refresh: () => Promise<void>; }'.
+src/screens/admin/AdminAppointmentsScreen.tsx(57,9): error TS2322: Type '{ id: string; propertyId: string; propertyTitle: any; clientName: any; clientPhone: any; clientEmail: any; agentName: any; date: string; time: string; visitType: "in_person" | "virtual"; status: "pending" | ... 3 more ... | "no_show"; message: string | undefined; createdAt: string; }[]' is not assignable to type 'Appointment[]'.
+  Type '{ id: string; propertyId: string; propertyTitle: any; clientName: any; clientPhone: any; clientEmail: any; agentName: any; date: string; time: string; visitType: "in_person" | "virtual"; status: "pending" | ... 3 more ... | "no_show"; message: string | undefined; createdAt: string; }' is not assignable to type 'Appointment'.
+    Types of property 'status' are incompatible.
+      Type '"pending" | "confirmed" | "completed" | "cancelled" | "no_show"' is not assignable to type '"pending" | "confirmed" | "completed" | "cancelled"'.
+        Type '"no_show"' is not assignable to type '"pending" | "confirmed" | "completed" | "cancelled"'.
+src/screens/admin/AdminAppointmentsScreen.tsx(166,12): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ pending: string; confirmed: string; completed: string; cancelled: string; }'.
+  No index signature with a parameter of type 'string' was found on type '{ pending: string; confirmed: string; completed: string; cancelled: string; }'.
+src/screens/admin/AdminInquiriesScreen.tsx(31,38): error TS2339: Property 'loadInquiries' does not exist on type '{ inquiries: Inquiry[]; loading: boolean; error: string | null; respond: (inquiryId: string, response: string) => Promise<Inquiry | null>; updateStatus: (inquiryId: string, status: "new" | ... 2 more ... | "closed") => Promise<...>; remove: (inquiryId: string) => Promise<...>; refresh: (status?: string | undefined) ...'.
+src/screens/admin/AdminPropertiesScreen.tsx(91,17): error TS2345: Argument of type '{ status: PropertyStatus; published_at: string | null; }' is not assignable to parameter of type 'never'.
+src/screens/admin/EditPropertyScreen.tsx(75,23): error TS2339: Property 'title' does not exist on type 'never'.
+src/screens/admin/EditPropertyScreen.tsx(76,29): error TS2339: Property 'description' does not exist on type 'never'.
+src/screens/admin/EditPropertyScreen.tsx(77,23): error TS2339: Property 'price' does not exist on type 'never'.
+src/screens/admin/EditPropertyScreen.tsx(78,25): error TS2339: Property 'address' does not exist on type 'never'.
+src/screens/admin/EditPropertyScreen.tsx(79,22): error TS2339: Property 'city' does not exist on type 'never'.
+src/screens/admin/EditPropertyScreen.tsx(80,26): error TS2339: Property 'bedrooms' does not exist on type 'never'.
+src/screens/admin/EditPropertyScreen.tsx(81,27): error TS2339: Property 'bathrooms' does not exist on type 'never'.
+src/screens/admin/EditPropertyScreen.tsx(82,22): error TS2339: Property 'area' does not exist on type 'never'.
+src/screens/admin/EditPropertyScreen.tsx(83,22): error TS2339: Property 'type' does not exist on type 'never'.
+src/screens/admin/EditPropertyScreen.tsx(84,24): error TS2339: Property 'status' does not exist on type 'never'.
+src/screens/admin/EditPropertyScreen.tsx(122,17): error TS2345: Argument of type '{ title: string; description: string; price: number; address: string; city: string; bedrooms: number | null; bathrooms: number | null; area: number | null; type: string; status: string; updated_at: string; }' is not assignable to parameter of type 'never'.
+src/screens/ChatScreen.tsx(543,29): error TS2339: Property 'errorLight' does not exist on type '{ primary: string; primaryDark: string; primaryLight: string; secondary: string; secondaryLight: string; accent: string; accentLight: string; heart: string; heartLight: string; white: string; background: string; ... 14 more ...; mapCluster: string; }'.
+src/screens/ComparePropertiesScreen.tsx(257,53): error TS2339: Property 'yearBuilt' does not exist on type 'Property'.
+src/screens/ReviewsScreen.tsx(145,40): error TS2552: Cannot find name 'Review'. Did you mean 'View'?
+src/screens/ReviewsScreen.tsx(616,29): error TS2339: Property 'errorLight' does not exist on type '{ primary: string; primaryDark: string; primaryLight: string; secondary: string; secondaryLight: string; accent: string; accentLight: string; heart: string; heartLight: string; white: string; background: string; ... 14 more ...; mapCluster: string; }'.
+src/screens/VirtualTourScreen.tsx(183,47): error TS2339: Property '0' does not exist on type '{ id: string; x: number; y: number; targetRoomId?: string | undefined; label?: string | undefined; type: "info" | "navigation"; }[] | undefined'.
+src/screens/VirtualTourScreen.tsx(218,9): error TS18047: 'currentRoom' is possibly 'null'.
+src/screens/VirtualTourScreen.tsx(231,8): error TS18047: 'currentRoom' is possibly 'null'.
+src/screens/VirtualTourScreen.tsx(395,14): error TS2304: Cannot find name 'tourRooms'.
+src/screens/VirtualTourScreen.tsx(395,29): error TS7006: Parameter 'room' implicitly has an 'any' type.
+src/screens/VirtualTourScreen.tsx(395,35): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/screens/VirtualTourScreen.tsx(400,19): error TS18047: 'currentRoom' is possibly 'null'.
+src/screens/VirtualTourScreen.tsx(406,19): error TS18047: 'currentRoom' is possibly 'null'.
+src/screens/VirtualTourScreen.tsx(414,53): error TS18047: 'currentRoom' is possibly 'null'.
+src/services/agentService.ts(142,16): error TS2339: Property 'user_id' does not exist on type 'never'.
+src/services/agentService.ts(143,21): error TS2339: Property 'user_id' does not exist on type 'never'.
+src/services/agentService.ts(144,23): error TS2339: Property 'profile' does not exist on type 'never'.
+src/services/agentService.ts(145,19): error TS2339: Property 'profile' does not exist on type 'never'.
+src/services/agentService.ts(146,19): error TS2339: Property 'profile' does not exist on type 'never'.
+src/services/agentService.ts(147,24): error TS2339: Property 'profile' does not exist on type 'never'.
+src/services/agentService.ts(149,28): error TS2339: Property 'license_number' does not exist on type 'never'.

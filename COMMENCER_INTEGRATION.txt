@@ -1,0 +1,44 @@
+🚀 INTÉGRATION COMPLÈTE SUPABASE - GUIDE RAPIDE
+===============================================
+
+✅ Script créé : supabase/INTEGRATION_COMPLETE.sql
+
+📋 CE QUI SERA CRÉÉ :
+---------------------
+✅ 14 tables (profiles, properties, inquiries, etc.)
+✅ 10 types ENUM (user_role, property_type, etc.)
+✅ 20+ index pour performance
+✅ RLS activé sur toutes les tables
+✅ 40+ policies de sécurité
+✅ 9 villes (Lualaba & Haut-Katanga)
+
+🎯 ÉTAPES :
+----------
+1. Ouvrez Supabase Dashboard
+2. Allez dans SQL Editor
+3. Ouvrez le fichier : supabase/INTEGRATION_COMPLETE.sql
+4. Copiez tout (Ctrl+A, Ctrl+C)
+5. Collez dans SQL Editor (Ctrl+V)
+6. Exécutez (Run ou Ctrl+Enter)
+7. Attendez 10-20 secondes
+
+✅ RÉSULTAT :
+------------
+Vous verrez :
+- ✅ "Intégration complète terminée !"
+- ✅ "Toutes les tables ont été créées/vérifiées !"
+- ✅ "RLS activé sur toutes les tables !"
+- ✅ "Toutes les policies ont été créées !"
+- ✅ "Tous les index ont été créés !"
+- ✅ "Villes de Lualaba & Haut-Katanga ajoutées !"
+
+⚠️ IMPORTANT :
+--------------
+Ce script est INTELLIGENT :
+- ✅ Ne crée que ce qui manque
+- ✅ Ne modifie pas ce qui existe
+- ✅ Peut être exécuté plusieurs fois
+
+➡️ EXÉCUTEZ MAINTENANT : supabase/INTEGRATION_COMPLETE.sql
+
+

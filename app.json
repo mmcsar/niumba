@@ -1,0 +1,79 @@
+{
+  "expo": {
+    "name": "Niumba",
+    "slug": "niumba",
+    "version": "1.0.1",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "niumba",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#006AFF"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.niumba.app",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Niumba utilise votre localisation pour vous montrer les propriétés à proximité.",
+        "NSLocationAlwaysUsageDescription": "Niumba utilise votre localisation pour vous montrer les propriétés à proximité.",
+        "NSPhotoLibraryUsageDescription": "Niumba a besoin d'accéder à vos photos pour ajouter des images aux propriétés.",
+        "NSCameraUsageDescription": "Niumba a besoin d'accéder à votre caméra pour prendre des photos des propriétés."
+      }
+    },
+    "android": {
+      "package": "com.niumba.app",
+      "versionCode": 2,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#006AFF"
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "RECEIVE_BOOT_COMPLETED",
+        "com.google.android.gms.permission.AD_ID"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-localization",
+      [
+        "expo-notifications",
+        {
+          "color": "#006AFF",
+          "sounds": [],
+          "mode": "production"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Niumba utilise votre localisation pour vous montrer les propriétés à proximité."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Niumba a besoin d'accéder à vos photos pour ajouter des images aux propriétés.",
+          "cameraPermission": "Niumba a besoin d'accéder à votre caméra pour prendre des photos des propriétés."
+        }
+      ],
+      "expo-font"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "5ea6774f-b903-4959-bc2a-9766697cca55"
+      }
+    },
+    "sdkVersion": "54.0.0"
+  }
+}

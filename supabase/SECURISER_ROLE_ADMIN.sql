@@ -1,0 +1,184 @@
+-- ============================================
+-- NIUMBA - Sécurisation du Rôle Admin
+-- ============================================
+-- 
+-- Ce script masque complètement le rôle admin
+-- dans les requêtes publiques
+-- ============================================
+
+-- ============================================
+-- 1. CRÉER UNE VUE SÉCURISÉE POUR LES PROFILS PUBLICS
+-- ============================================
+
+-- Supprimer la vue si elle existe déjà
+DROP VIEW IF EXISTS profiles_public CASCADE;
+
+-- Créer une vue qui masque le rôle admin
+CREATE VIEW profiles_public AS
+SELECT 
+  id,
+  email,
+  full_name,
+  phone,
+  avatar_url,
+  company_name,
+  company_logo,
+  -- Masquer le rôle admin pour les non-admins
+  CASE 
+    WHEN role = 'admin' AND auth.uid() != id THEN 'user'::user_role
+    ELSE role
+  END as role,
+  language,
+  city,
+  province,
+  is_verified,
+  is_active,
+  created_at,
+  updated_at
+FROM profiles;
+
+-- Activer RLS sur la vue
+ALTER VIEW profiles_public SET (security_invoker = true);
+
+-- ============================================
+-- 2. CRÉER UNE POLICY RLS PLUS STRICTE POUR LA TABLE PROFILES
+-- ============================================
+
+-- Supprimer l'ancienne policy trop permissive
+DROP POLICY IF EXISTS "profiles_select_public" ON profiles;
+
+-- Créer une nouvelle policy qui masque le rôle admin
+CREATE POLICY "profiles_select_secure" ON profiles 
+FOR SELECT USING (
+  -- Les utilisateurs peuvent voir leur propre profil complet
+  auth.uid() = id
+  OR
+  -- Les admins peuvent voir tous les profils
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  OR
+  -- Les autres peuvent voir les profils publics (sans rôle admin exposé)
+  (
+    role != 'admin'
+    AND (
+      is_active = true
+      OR auth.uid() IS NOT NULL
+    )
+  )
+);
+
+-- ============================================
+-- 3. CRÉER UNE FONCTION POUR MASQUER LE RÔLE ADMIN
+-- ============================================
+
+-- Fonction pour obtenir le rôle visible (masque admin pour les non-admins)
+CREATE OR REPLACE FUNCTION get_visible_role(profile_id UUID, user_role user_role)
+RETURNS user_role AS $$
+BEGIN
+  -- Si l'utilisateur demande son propre profil, retourner le rôle réel
+  IF auth.uid() = profile_id THEN
+    RETURN user_role;
+  END IF;
+  
+  -- Si l'utilisateur est admin, retourner le rôle réel
+  IF EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin') THEN
+    RETURN user_role;
+  END IF;
+  
+  -- Sinon, masquer le rôle admin
+  IF user_role = 'admin' THEN
+    RETURN 'user'::user_role;
+  END IF;
+  
+  RETURN user_role;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- ============================================
+-- 4. CRÉER UNE VUE ALTERNATIVE AVEC LA FONCTION
+-- ============================================
+
+-- Vue alternative qui utilise la fonction
+CREATE OR REPLACE VIEW profiles_public_secure AS
+SELECT 
+  id,
+  email,
+  full_name,
+  phone,
+  avatar_url,
+  company_name,
+  company_logo,
+  get_visible_role(id, role) as role,
+  language,
+  city,
+  province,
+  is_verified,
+  is_active,
+  created_at,
+  updated_at
+FROM profiles;
+
+-- Activer RLS sur la vue
+ALTER VIEW profiles_public_secure SET (security_invoker = true);
+
+-- ============================================
+-- 5. CRÉER DES POLICIES POUR LES VUES
+-- ============================================
+
+-- Policy pour la vue profiles_public
+-- (Les vues héritent des policies de la table sous-jacente)
+
+-- ============================================
+-- 6. VÉRIFICATION
+-- ============================================
+
+-- Vérifier que les policies sont bien créées
+SELECT 
+  schemaname,
+  tablename,
+  policyname,
+  cmd as operation,
+  qual as using_expression
+FROM pg_policies
+WHERE schemaname = 'public' 
+  AND tablename = 'profiles'
+ORDER BY policyname;
+
+-- Vérifier que les vues sont créées
+SELECT 
+  table_name,
+  table_type
+FROM information_schema.tables
+WHERE table_schema = 'public'
+  AND table_name LIKE 'profiles%'
+ORDER BY table_name;
+
+-- ============================================
+-- 7. TEST DE SÉCURITÉ
+-- ============================================
+
+-- Test 1 : Un utilisateur normal ne devrait pas voir le rôle admin
+-- (À exécuter avec un utilisateur non-admin)
+-- SELECT id, email, full_name, role FROM profiles WHERE role = 'admin';
+-- Résultat attendu : Le rôle devrait être masqué ou la requête devrait retourner vide
+
+-- Test 2 : Un admin devrait voir tous les rôles
+-- (À exécuter avec un utilisateur admin)
+-- SELECT id, email, full_name, role FROM profiles;
+-- Résultat attendu : Tous les rôles devraient être visibles
+
+-- ============================================
+-- FIN
+-- ============================================
+
+DO $$
+BEGIN
+  RAISE NOTICE '✅ Sécurisation du rôle admin terminée !';
+  RAISE NOTICE '✅ Vue profiles_public créée';
+  RAISE NOTICE '✅ Vue profiles_public_secure créée';
+  RAISE NOTICE '✅ Policy RLS sécurisée créée';
+  RAISE NOTICE '✅ Fonction get_visible_role créée';
+  RAISE NOTICE '';
+  RAISE NOTICE '🔒 Le rôle admin est maintenant masqué pour les utilisateurs normaux !';
+END $$;
+
+

@@ -1,0 +1,27 @@
+🎯 GUIDE RAPIDE - CONFIGURER LE RLS
+
+📋 COMMENCEZ ICI :
+
+1. Ouvrez Supabase Dashboard
+   → https://supabase.com/dashboard
+
+2. Cliquez sur "SQL Editor" (menu gauche)
+
+3. Cliquez sur "New Query"
+
+4. Ouvrez ce fichier :
+   C:\Users\mmcsa\Niumba\supabase\SECURITE_SUPABASE_COMPLETE.sql
+
+5. Sélectionnez TOUT (Ctrl+A) et Copiez (Ctrl+C)
+
+6. Collez dans Supabase SQL Editor (Ctrl+V)
+
+7. Cliquez sur "Run" (ou Ctrl+Enter)
+
+8. C'est fait ! ✅
+
+⏱️ Temps : 2 minutes
+
+📖 Guide détaillé : GUIDE_ETAPE_PAR_ETAPE.md
+
+

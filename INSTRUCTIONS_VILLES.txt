@@ -1,0 +1,73 @@
+============================================
+INSTRUCTIONS POUR AJOUTER LES VILLES DANS SUPABASE
+============================================
+
+1. Ouvrez votre Supabase Dashboard
+   https://app.supabase.com
+
+2. Allez dans "SQL Editor" (Éditeur SQL)
+
+3. Cliquez sur "New Query" (Nouvelle requête)
+
+4. Ouvrez le fichier "INSERT_CITIES.txt"
+
+5. Copiez TOUT le contenu (Ctrl+A puis Ctrl+C)
+
+6. Collez dans l'éditeur SQL de Supabase (Ctrl+V)
+
+7. Cliquez sur "Run" (Exécuter) ou appuyez sur F5
+
+8. Vérifiez le résultat - vous devriez voir :
+   - Haut-Katanga: 15 villes
+   - Lualaba: 5 villes
+
+============================================
+VILLES AJOUTÉES
+============================================
+
+HAUT-KATANGA (15 villes):
+- Lubumbashi (capitale)
+- Likasi
+- Kipushi
+- Kasenga
+- Kakanda
+- Kambove
+- Kampemba
+- Kisanga
+- Kakontwe
+- Pweto
+- Mitwaba
+- Manono
+- Kongolo
+- Kabongo
+- Kamina
+
+LUALABA (5 villes):
+- Kolwezi (capitale)
+- Fungurume
+- Kasumbalesa
+- Mutshatsha
+- Lubudi
+
+============================================
+VÉRIFICATION
+============================================
+
+Pour vérifier que tout est bien inséré, exécutez cette requête :
+
+SELECT 
+  province,
+  COUNT(*) as nombre_villes,
+  STRING_AGG(name, ', ' ORDER BY name) as villes
+FROM cities
+GROUP BY province
+ORDER BY province;
+
+Vous devriez voir :
+- Haut-Katanga: 15 villes
+- Lualaba: 5 villes
+
+============================================
+FIN
+============================================
+

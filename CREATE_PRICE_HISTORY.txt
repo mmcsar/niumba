@@ -1,0 +1,91 @@
+-- ============================================
+-- NIUMBA - Table Price History
+-- ============================================
+-- Table pour l'historique des prix des propriétés
+
+CREATE TABLE IF NOT EXISTS price_history (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  property_id UUID REFERENCES properties(id) ON DELETE CASCADE,
+  price NUMERIC NOT NULL,
+  currency TEXT DEFAULT 'XOF',
+  event_type TEXT CHECK (event_type IN ('listed', 'price_change', 'price_reduced', 'sale', 'rented', 'other')),
+  event_description TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  created_by UUID REFERENCES profiles(id) ON DELETE SET NULL
+);
+
+-- Index pour améliorer les performances
+CREATE INDEX IF NOT EXISTS idx_price_history_property ON price_history(property_id);
+CREATE INDEX IF NOT EXISTS idx_price_history_created ON price_history(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_price_history_event ON price_history(event_type);
+
+-- ============================================
+-- Activer RLS
+-- ============================================
+
+ALTER TABLE price_history ENABLE ROW LEVEL SECURITY;
+
+-- ============================================
+-- Policies
+-- ============================================
+
+-- Tout le monde peut voir l'historique des prix (public)
+DROP POLICY IF EXISTS "price_history_select_all" ON price_history;
+CREATE POLICY "price_history_select_all" ON price_history
+  FOR SELECT
+  USING (true);
+
+-- Seuls les admins et propriétaires peuvent ajouter des entrées
+DROP POLICY IF EXISTS "price_history_insert_authorized" ON price_history;
+CREATE POLICY "price_history_insert_authorized" ON price_history
+  FOR INSERT
+  WITH CHECK (
+    auth.uid() IS NOT NULL 
+    AND (
+      EXISTS (
+        SELECT 1 FROM profiles 
+        WHERE id = auth.uid() 
+        AND role IN ('admin', 'editor')
+      )
+      OR EXISTS (
+        SELECT 1 FROM properties 
+        WHERE id = price_history.property_id 
+        AND owner_id = auth.uid()
+      )
+    )
+  );
+
+-- Seuls les admins peuvent modifier
+DROP POLICY IF EXISTS "price_history_update_admin" ON price_history;
+CREATE POLICY "price_history_update_admin" ON price_history
+  FOR UPDATE
+  USING (
+    auth.uid() IS NOT NULL 
+    AND EXISTS (
+      SELECT 1 FROM profiles 
+      WHERE id = auth.uid() 
+      AND role = 'admin'
+    )
+  )
+  WITH CHECK (
+    auth.uid() IS NOT NULL 
+    AND EXISTS (
+      SELECT 1 FROM profiles 
+      WHERE id = auth.uid() 
+      AND role = 'admin'
+    )
+  );
+
+-- Seuls les admins peuvent supprimer
+DROP POLICY IF EXISTS "price_history_delete_admin" ON price_history;
+CREATE POLICY "price_history_delete_admin" ON price_history
+  FOR DELETE
+  USING (
+    auth.uid() IS NOT NULL 
+    AND EXISTS (
+      SELECT 1 FROM profiles 
+      WHERE id = auth.uid() 
+      AND role = 'admin'
+    )
+  );
+

@@ -1,0 +1,184 @@
+-- ============================================
+-- NIUMBA - Correction des Tables Chat
+-- ============================================
+-- Ce script corrige les tables conversations et messages
+-- pour correspondre au service chatService.ts
+
+-- ============================================
+-- 1. Vérifier et corriger CONVERSATIONS
+-- ============================================
+
+-- Supprimer l'ancienne table si elle existe avec l'ancienne structure
+DROP TABLE IF EXISTS conversations CASCADE;
+
+-- Créer la table avec la bonne structure
+CREATE TABLE IF NOT EXISTS conversations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  participant_1 UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  participant_2 UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  property_id UUID REFERENCES properties(id) ON DELETE SET NULL,
+  last_message_at TIMESTAMPTZ,
+  last_message_preview TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Index pour améliorer les performances
+CREATE INDEX IF NOT EXISTS idx_conversations_participant_1 ON conversations(participant_1);
+CREATE INDEX IF NOT EXISTS idx_conversations_participant_2 ON conversations(participant_2);
+CREATE INDEX IF NOT EXISTS idx_conversations_property ON conversations(property_id);
+CREATE INDEX IF NOT EXISTS idx_conversations_last_message ON conversations(last_message_at DESC);
+
+-- ============================================
+-- 2. Vérifier et corriger MESSAGES
+-- ============================================
+
+-- Supprimer l'ancienne table si elle existe avec l'ancienne structure
+DROP TABLE IF EXISTS messages CASCADE;
+
+-- Créer la table avec la bonne structure
+CREATE TABLE IF NOT EXISTS messages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  conversation_id UUID REFERENCES conversations(id) ON DELETE CASCADE,
+  sender_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  attachment_type TEXT CHECK (attachment_type IN ('text', 'image', 'file', 'location')),
+  attachment_url TEXT,
+  status TEXT DEFAULT 'sent' CHECK (status IN ('sent', 'delivered', 'read')),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  read_at TIMESTAMPTZ
+);
+
+-- Index pour améliorer les performances
+CREATE INDEX IF NOT EXISTS idx_messages_conversation ON messages(conversation_id);
+CREATE INDEX IF NOT EXISTS idx_messages_sender ON messages(sender_id);
+CREATE INDEX IF NOT EXISTS idx_messages_created ON messages(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_messages_status ON messages(status);
+
+-- ============================================
+-- 3. Activer RLS
+-- ============================================
+
+ALTER TABLE conversations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+
+-- ============================================
+-- 4. Policies pour CONVERSATIONS
+-- ============================================
+
+-- Les utilisateurs peuvent voir leurs conversations
+DROP POLICY IF EXISTS "conversations_select_own" ON conversations;
+CREATE POLICY "conversations_select_own" ON conversations
+  FOR SELECT
+  USING (
+    auth.uid() IS NOT NULL 
+    AND (participant_1 = auth.uid() OR participant_2 = auth.uid())
+  );
+
+-- Les utilisateurs peuvent créer des conversations
+DROP POLICY IF EXISTS "conversations_insert_own" ON conversations;
+CREATE POLICY "conversations_insert_own" ON conversations
+  FOR INSERT
+  WITH CHECK (
+    auth.uid() IS NOT NULL 
+    AND (participant_1 = auth.uid() OR participant_2 = auth.uid())
+  );
+
+-- Les utilisateurs peuvent mettre à jour leurs conversations
+DROP POLICY IF EXISTS "conversations_update_own" ON conversations;
+CREATE POLICY "conversations_update_own" ON conversations
+  FOR UPDATE
+  USING (
+    auth.uid() IS NOT NULL 
+    AND (participant_1 = auth.uid() OR participant_2 = auth.uid())
+  )
+  WITH CHECK (
+    auth.uid() IS NOT NULL 
+    AND (participant_1 = auth.uid() OR participant_2 = auth.uid())
+  );
+
+-- ============================================
+-- 5. Policies pour MESSAGES
+-- ============================================
+
+-- Les utilisateurs peuvent voir les messages de leurs conversations
+DROP POLICY IF EXISTS "messages_select_own" ON messages;
+CREATE POLICY "messages_select_own" ON messages
+  FOR SELECT
+  USING (
+    auth.uid() IS NOT NULL 
+    AND EXISTS (
+      SELECT 1 FROM conversations c 
+      WHERE c.id = messages.conversation_id 
+      AND (c.participant_1 = auth.uid() OR c.participant_2 = auth.uid())
+    )
+  );
+
+-- Les utilisateurs peuvent envoyer des messages
+DROP POLICY IF EXISTS "messages_insert_own" ON messages;
+CREATE POLICY "messages_insert_own" ON messages
+  FOR INSERT
+  WITH CHECK (
+    auth.uid() IS NOT NULL 
+    AND sender_id = auth.uid()
+    AND EXISTS (
+      SELECT 1 FROM conversations c 
+      WHERE c.id = messages.conversation_id 
+      AND (c.participant_1 = auth.uid() OR c.participant_2 = auth.uid())
+    )
+  );
+
+-- Les utilisateurs peuvent mettre à jour leurs messages (pour marquer comme lu)
+DROP POLICY IF EXISTS "messages_update_own" ON messages;
+CREATE POLICY "messages_update_own" ON messages
+  FOR UPDATE
+  USING (
+    auth.uid() IS NOT NULL 
+    AND EXISTS (
+      SELECT 1 FROM conversations c 
+      WHERE c.id = messages.conversation_id 
+      AND (c.participant_1 = auth.uid() OR c.participant_2 = auth.uid())
+    )
+  )
+  WITH CHECK (
+    auth.uid() IS NOT NULL 
+    AND EXISTS (
+      SELECT 1 FROM conversations c 
+      WHERE c.id = messages.conversation_id 
+      AND (c.participant_1 = auth.uid() OR c.participant_2 = auth.uid())
+    )
+  );
+
+-- Les utilisateurs peuvent supprimer leurs messages
+DROP POLICY IF EXISTS "messages_delete_own" ON messages;
+CREATE POLICY "messages_delete_own" ON messages
+  FOR DELETE
+  USING (
+    auth.uid() IS NOT NULL 
+    AND sender_id = auth.uid()
+  );
+
+-- ============================================
+-- 6. Fonction pour mettre à jour last_message_at automatiquement
+-- ============================================
+
+CREATE OR REPLACE FUNCTION update_conversation_last_message()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE conversations
+  SET 
+    last_message_at = NEW.created_at,
+    last_message_preview = LEFT(NEW.content, 100),
+    updated_at = NOW()
+  WHERE id = NEW.conversation_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger pour mettre à jour automatiquement
+DROP TRIGGER IF EXISTS trigger_update_conversation_last_message ON messages;
+CREATE TRIGGER trigger_update_conversation_last_message
+  AFTER INSERT ON messages
+  FOR EACH ROW
+  EXECUTE FUNCTION update_conversation_last_message();
+

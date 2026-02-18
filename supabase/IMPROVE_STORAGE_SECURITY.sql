@@ -1,0 +1,208 @@
+-- ============================================
+-- Niumba - Amélioration de la Sécurité Storage
+-- ============================================
+-- Ce script améliore la sécurité des buckets storage
+-- en vérifiant que seul le propriétaire peut modifier/supprimer ses fichiers
+-- ============================================
+
+-- ============================================
+-- 1. AMÉLIORER LES POLICIES property-images
+-- ============================================
+
+-- Supprimer les anciennes policies trop permissives
+DROP POLICY IF EXISTS "Users can upload property images" ON storage.objects;
+DROP POLICY IF EXISTS "Public can read property images" ON storage.objects;
+DROP POLICY IF EXISTS "Users can update property images" ON storage.objects;
+DROP POLICY IF EXISTS "Users can delete property images" ON storage.objects;
+
+-- INSERT: Permettre aux utilisateurs authentifiés d'uploader
+-- Format du path: property-images/{user_id}/{filename}
+CREATE POLICY "Users can upload property images"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (
+  bucket_id = 'property-images'
+  AND (storage.foldername(name))[1] = 'property-images'
+  AND (storage.foldername(name))[2] = auth.uid()::text
+);
+
+-- SELECT: Permettre au public de lire (pour afficher les images)
+CREATE POLICY "Public can read property images"
+ON storage.objects FOR SELECT
+TO public
+USING (bucket_id = 'property-images');
+
+-- UPDATE: Seul le propriétaire peut mettre à jour
+CREATE POLICY "Users can update their own property images"
+ON storage.objects FOR UPDATE
+TO authenticated
+USING (
+  bucket_id = 'property-images'
+  AND (storage.foldername(name))[2] = auth.uid()::text
+)
+WITH CHECK (
+  bucket_id = 'property-images'
+  AND (storage.foldername(name))[2] = auth.uid()::text
+);
+
+-- DELETE: Seul le propriétaire ou un admin peut supprimer
+CREATE POLICY "Users can delete their own property images"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (
+  bucket_id = 'property-images'
+  AND (
+    -- Le propriétaire peut supprimer
+    (storage.foldername(name))[2] = auth.uid()::text
+    OR
+    -- Un admin peut supprimer
+    EXISTS (
+      SELECT 1 FROM profiles
+      WHERE profiles.id = auth.uid()
+      AND profiles.role = 'admin'
+    )
+  )
+);
+
+-- ============================================
+-- 2. AMÉLIORER LES POLICIES avatars
+-- ============================================
+
+-- Supprimer les anciennes policies trop permissives
+DROP POLICY IF EXISTS "Users can upload avatars" ON storage.objects;
+DROP POLICY IF EXISTS "Public can read avatars" ON storage.objects;
+DROP POLICY IF EXISTS "Users can update avatars" ON storage.objects;
+DROP POLICY IF EXISTS "Users can delete avatars" ON storage.objects;
+
+-- INSERT: Permettre aux utilisateurs authentifiés d'uploader leur avatar
+-- Format du path: avatars/{user_id}/{filename}
+CREATE POLICY "Users can upload their own avatars"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (
+  bucket_id = 'avatars'
+  AND (storage.foldername(name))[1] = 'avatars'
+  AND (storage.foldername(name))[2] = auth.uid()::text
+);
+
+-- SELECT: Permettre au public de lire (pour afficher les avatars)
+CREATE POLICY "Public can read avatars"
+ON storage.objects FOR SELECT
+TO public
+USING (bucket_id = 'avatars');
+
+-- UPDATE: Seul le propriétaire peut mettre à jour
+CREATE POLICY "Users can update their own avatars"
+ON storage.objects FOR UPDATE
+TO authenticated
+USING (
+  bucket_id = 'avatars'
+  AND (storage.foldername(name))[2] = auth.uid()::text
+)
+WITH CHECK (
+  bucket_id = 'avatars'
+  AND (storage.foldername(name))[2] = auth.uid()::text
+);
+
+-- DELETE: Seul le propriétaire ou un admin peut supprimer
+CREATE POLICY "Users can delete their own avatars"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (
+  bucket_id = 'avatars'
+  AND (
+    -- Le propriétaire peut supprimer
+    (storage.foldername(name))[2] = auth.uid()::text
+    OR
+    -- Un admin peut supprimer
+    EXISTS (
+      SELECT 1 FROM profiles
+      WHERE profiles.id = auth.uid()
+      AND profiles.role = 'admin'
+    )
+  )
+);
+
+-- ============================================
+-- 3. AMÉLIORER LES POLICIES chat-attachments
+-- ============================================
+
+-- Si le bucket chat-attachments existe, sécuriser aussi
+DROP POLICY IF EXISTS "Allow authenticated read access to chat attachments" ON storage.objects;
+DROP POLICY IF EXISTS "Allow authenticated write access to chat attachments" ON storage.objects;
+
+-- SELECT: Seuls les participants de la conversation peuvent lire
+CREATE POLICY "Users can read chat attachments"
+ON storage.objects FOR SELECT
+TO authenticated
+USING (
+  bucket_id = 'chat-attachments'
+  AND EXISTS (
+    SELECT 1 FROM conversations c
+    WHERE c.id::text = (storage.foldername(name))[2]
+    AND (c.participant_1 = auth.uid() OR c.participant_2 = auth.uid())
+  )
+);
+
+-- INSERT: Seul l'expéditeur peut uploader
+CREATE POLICY "Users can upload chat attachments"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (
+  bucket_id = 'chat-attachments'
+  AND (storage.foldername(name))[3] = auth.uid()::text
+);
+
+-- DELETE: Seul l'expéditeur ou un admin peut supprimer
+CREATE POLICY "Users can delete their own chat attachments"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (
+  bucket_id = 'chat-attachments'
+  AND (
+    (storage.foldername(name))[3] = auth.uid()::text
+    OR
+    EXISTS (
+      SELECT 1 FROM profiles
+      WHERE profiles.id = auth.uid()
+      AND profiles.role = 'admin'
+    )
+  )
+);
+
+-- ============================================
+-- 4. VÉRIFICATION
+-- ============================================
+
+-- Vérifier les nouvelles policies
+SELECT 
+  policyname,
+  cmd,
+  CASE 
+    WHEN cmd = 'SELECT' THEN 'Lecture'
+    WHEN cmd = 'INSERT' THEN 'Insertion'
+    WHEN cmd = 'UPDATE' THEN 'Modification'
+    WHEN cmd = 'DELETE' THEN 'Suppression'
+  END as operation,
+  qual as condition,
+  with_check as verification
+FROM pg_policies
+WHERE schemaname = 'storage'
+  AND tablename = 'objects'
+  AND (
+    policyname LIKE '%property%' 
+    OR policyname LIKE '%avatar%'
+    OR policyname LIKE '%chat%'
+  )
+ORDER BY policyname;
+
+-- ============================================
+-- FIN DU SCRIPT
+-- ============================================
+-- IMPORTANT : Après avoir exécuté ce script, vous devez
+-- modifier le code de l'application pour utiliser le bon format de path :
+-- - property-images/{user_id}/{filename}
+-- - avatars/{user_id}/{filename}
+-- - chat-attachments/{conversation_id}/{user_id}/{filename}
+-- ============================================
+

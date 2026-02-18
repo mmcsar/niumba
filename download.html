@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Télécharger Niumba - Application Immobilière</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .logo-container {
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            background: #f5f5dc;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 72px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 30%, #0f3460 60%, #006AFF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            letter-spacing: -2px;
+            line-height: 1;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .description {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .download-section {
+            margin: 40px 0;
+        }
+
+        .download-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #006AFF 0%, #0052CC 100%);
+            color: white;
+            padding: 18px 40px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(0, 106, 255, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 10px;
+        }
+
+        .download-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 106, 255, 0.5);
+        }
+
+        .download-button:active {
+            transform: translateY(0);
+        }
+
+        .qr-section {
+            margin: 40px 0;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .qr-code {
+            width: 250px;
+            height: 250px;
+            margin: 20px auto;
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .qr-code img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .qr-text {
+            color: #666;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .feature-text {
+            color: #555;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .instructions {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .instructions h3 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .instructions ol {
+            color: #856404;
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .version {
+            color: #999;
+            font-size: 14px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .logo {
+                width: 100px;
+                height: 100px;
+            }
+
+            .logo-text {
+                font-size: 36px;
+            }
+
+            .download-button {
+                padding: 15px 30px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Logo -->
+        <div class="logo-container">
+            <div class="logo">
+                <!-- Logo N stylisé avec dégradé bleu (style Expo) -->
+                <div class="logo-text">N</div>
+            </div>
+        </div>
+
+        <!-- Titre -->
+        <h1>Niumba</h1>
+        <p class="subtitle">Votre application immobilière complète</p>
+
+        <!-- Description -->
+        <p class="description">
+            Trouvez votre propriété idéale avec Niumba. Recherche avancée, visualisation détaillée 
+            et gestion complète de vos propriétés immobilières.
+        </p>
+
+        <!-- Fonctionnalités -->
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🔍</div>
+                <div class="feature-text">Recherche avancée</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📍</div>
+                <div class="feature-text">Géolocalisation</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📸</div>
+                <div class="feature-text">Photos HD</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📅</div>
+                <div class="feature-text">Rendez-vous</div>
+            </div>
+        </div>
+
+        <!-- Section téléchargement -->
+        <div class="download-section">
+            <a href="https://expo.dev/artifacts/eas/337CNEC3VowcS772TgiSkt.apk" 
+               class="download-button" 
+               download="niumba.apk">
+                📱 Télécharger l'application
+            </a>
+        </div>
+
+        <!-- QR Code Section -->
+        <div class="qr-section">
+            <h3 style="color: #333; margin-bottom: 15px;">Ou scannez le QR code</h3>
+            <div class="qr-code">
+                <img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=https://expo.dev/artifacts/eas/337CNEC3VowcS772TgiSkt.apk" 
+                     alt="QR Code pour télécharger Niumba"
+                     title="Scannez ce QR code pour télécharger Niumba">
+            </div>
+            <p class="qr-text">Scannez avec votre téléphone pour télécharger</p>
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions">
+            <h3>📋 Instructions d'installation</h3>
+            <ol>
+                <li>Téléchargez le fichier APK</li>
+                <li>Sur votre téléphone, allez dans <strong>Paramètres → Sécurité</strong></li>
+                <li>Activez <strong>"Sources inconnues"</strong> ou <strong>"Installer des applications inconnues"</strong></li>
+                <li>Ouvrez le fichier APK téléchargé</li>
+                <li>Suivez les instructions d'installation</li>
+            </ol>
+        </div>
+
+        <!-- Version -->
+        <p class="version">Version 1.0.1</p>
+    </div>
+</body>
+</html>
+

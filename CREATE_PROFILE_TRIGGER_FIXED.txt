@@ -1,0 +1,74 @@
+-- Niumba - Trigger pour Creation Automatique des Profils
+-- Ce script cree un trigger qui cree automatiquement
+-- un profil dans la table profiles lorsqu un utilisateur
+-- s inscrit dans auth.users
+
+-- 1. FONCTION POUR CREER LE PROFIL AUTOMATIQUEMENT
+
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (
+    id,
+    email,
+    full_name,
+    role,
+    is_verified,
+    is_active,
+    language,
+    created_at,
+    updated_at
+  )
+  VALUES (
+    NEW.id,
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.email, 'User'),
+    COALESCE((NEW.raw_user_meta_data->>'role')::text, 'user')::user_role,
+    (NEW.email_confirmed_at IS NOT NULL),
+    true,
+    COALESCE(NEW.raw_user_meta_data->>'language', 'fr'),
+    NOW(),
+    NOW()
+  )
+  ON CONFLICT (id) DO NOTHING;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 2. CREER LE TRIGGER
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW
+  EXECUTE FUNCTION public.handle_new_user();
+
+-- 3. FONCTION POUR METTRE A JOUR LE PROFIL QUAND L EMAIL CHANGE
+
+CREATE OR REPLACE FUNCTION public.handle_user_email_update()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF OLD.email IS DISTINCT FROM NEW.email THEN
+    UPDATE public.profiles
+    SET 
+      email = NEW.email,
+      updated_at = NOW()
+    WHERE id = NEW.id;
+  END IF;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 4. CREER LE TRIGGER POUR LA MISE A JOUR DE L EMAIL
+
+DROP TRIGGER IF EXISTS on_auth_user_email_updated ON auth.users;
+
+CREATE TRIGGER on_auth_user_email_updated
+  AFTER UPDATE ON auth.users
+  FOR EACH ROW
+  WHEN (OLD.email IS DISTINCT FROM NEW.email)
+  EXECUTE FUNCTION public.handle_user_email_update();
+
