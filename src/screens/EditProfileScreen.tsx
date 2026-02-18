@@ -202,9 +202,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
 
       // Update profile
       const updatedUser = await updateUser(user.id, {
-        full_name: fullName.trim() || null,
-        phone: phone.trim() || null,
-        avatar_url: avatarUrl,
+        full_name: fullName.trim() || undefined,
+        phone: phone.trim() || undefined,
+        avatar_url: avatarUrl ?? undefined,
       });
 
       if (updatedUser) {

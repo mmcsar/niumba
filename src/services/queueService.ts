@@ -291,11 +291,11 @@ class QueueService {
 
   private initNetworkListener(): void {
     NetInfo.addEventListener((state) => {
-      this.isOnline = state.isConnected && state.isInternetReachable !== false;
+      this.isOnline = state.isConnected === true && state.isInternetReachable !== false;
     });
 
     NetInfo.fetch().then((state) => {
-      this.isOnline = state.isConnected && state.isInternetReachable !== false;
+      this.isOnline = state.isConnected === true && state.isInternetReachable !== false;
     });
   }
 
@@ -466,7 +466,7 @@ queue.registerHandler('sync_favorites', async (payload: { userId: string; proper
   // Add new
   const toAdd = payload.propertyIds.filter((id) => !existingIds.has(id));
   if (toAdd.length > 0) {
-    await supabase.from('saved_properties').insert(
+    await (supabase as any).from('saved_properties').insert(
       toAdd.map((id) => ({ user_id: payload.userId, property_id: id }))
     );
   }

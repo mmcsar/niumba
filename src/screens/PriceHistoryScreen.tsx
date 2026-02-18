@@ -36,7 +36,7 @@ const PriceHistoryScreen: React.FC<PriceHistoryScreenProps> = ({ navigation, rou
   const { i18n } = useTranslation();
   const isEnglish = i18n.language === 'en';
 
-  const [selectedPeriod, setSelectedPeriod] = useState<'month' | 'year' | 'all'>('year');
+  const [selectedPeriod, setSelectedPeriod] = useState<'month' | 'year' | 'all' | '6m' | '1y' | '2y'>('year');
   const { property, loading: propertyLoading } = useProperty(propertyId);
   const { history, statistics, loading, error, loadHistory } = usePriceHistory(propertyId);
 

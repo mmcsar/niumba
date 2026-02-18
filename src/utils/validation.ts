@@ -55,14 +55,14 @@ export const ValidationRules = {
 
   // Longueur minimale
   minLength: (min: number) => ({
-    test: (value: string) => value && value.trim().length >= min,
+    test: (value: string): boolean => Boolean(value && value.trim().length >= min),
     message: `Minimum ${min} caractères`,
     messageEn: `Minimum ${min} characters`,
   }),
 
   // Longueur maximale
   maxLength: (max: number) => ({
-    test: (value: string) => !value || value.trim().length <= max,
+    test: (value: string): boolean => !value || value.trim().length <= max,
     message: `Maximum ${max} caractères`,
     messageEn: `Maximum ${max} characters`,
   }),

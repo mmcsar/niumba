@@ -156,8 +156,9 @@ export const getTopProperties = async (limit: number = 10): Promise<TopProperty[
     if (error) throw error;
 
     // Get inquiries count for each property
+    type PropertyRow = { id: string; title?: string; views?: number };
     const propertiesWithInquiries = await Promise.all(
-      (data || []).map(async (property) => {
+      ((data || []) as PropertyRow[]).map(async (property) => {
         const { count } = await supabase
           .from('inquiries')
           .select('*', { count: 'exact', head: true })

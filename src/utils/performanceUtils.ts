@@ -1,7 +1,8 @@
 // Niumba - Performance Utilities
 // Helper functions for performance optimization
 
-import { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import { View } from 'react-native';
 
 /**
  * Debounce function to limit function calls

@@ -269,6 +269,29 @@ export const getUserAppointments = async (
 };
 
 /**
+ * Get a single appointment by ID
+ */
+export const getAppointmentById = async (appointmentId: string): Promise<Appointment | null> => {
+  if (!isSupabaseConfigured()) return null;
+  try {
+    const { data, error } = await supabase
+      .from('appointments')
+      .select(`
+        *,
+        property:properties(id, title, images, address, latitude, longitude),
+        client:profiles!client_id(id, full_name, email, phone),
+        agent:profiles!agent_id(id, full_name, email, phone, avatar_url)
+      `)
+      .eq('id', appointmentId)
+      .single();
+    if (error || !data) return null;
+    return data as Appointment;
+  } catch {
+    return null;
+  }
+};
+
+/**
  * Get available time slots for a property on a specific date
  */
 export const getAvailableSlots = async (

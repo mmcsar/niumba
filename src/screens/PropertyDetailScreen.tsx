@@ -757,31 +757,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: COLORS.white,
-    padding: SIZES.screenPadding,
-  },
-  errorText: {
-    fontSize: 16,
-    color: COLORS.textSecondary,
-    marginTop: 16,
-    textAlign: 'center',
-  },
-  backButton: {
-    marginTop: 24,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    backgroundColor: COLORS.primary,
-    borderRadius: SIZES.radius,
-  },
-  backButtonText: {
-    color: COLORS.white,
-    fontSize: 16,
-    fontWeight: '600',
-  },
   bookAppointmentButton: {
     flexDirection: 'row',
     alignItems: 'center',

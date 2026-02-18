@@ -45,6 +45,20 @@ export const COLORS = {
   // Map
   mapMarker: '#006AFF',
   mapCluster: '#E4002B',
+
+  // Error light (alias)
+  errorLight: '#FFE8EC',
+
+  // Shadows
+  shadows: {
+    card: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.08,
+      shadowRadius: 8,
+      elevation: 3,
+    },
+  },
 };
 
 export const FONTS = {

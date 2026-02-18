@@ -472,6 +472,12 @@ const styles = StyleSheet.create({
   placeholder: {
     width: 40,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 48,
+  },
   infoCard: {
     flexDirection: 'row',
     margin: SIZES.screenPadding,

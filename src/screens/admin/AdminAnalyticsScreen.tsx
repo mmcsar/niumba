@@ -43,7 +43,7 @@ const AdminAnalyticsScreen: React.FC<{ navigation: any }> = ({ navigation }) => 
       const [statsData, topProps, daily] = await Promise.all([
         getAnalyticsStats(period),
         getTopProperties(10),
-        getDailyStats(period),
+        getDailyStats(period === 'day' ? 'week' : period),
       ]);
       setStats(statsData);
       setTopProperties(topProps);

@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "main": "index.ts",
   "scripts": {
+    "build": "npx tsc --noEmit",
     "start": "expo start",
     "start:dev": "expo start --dev-client",
     "android": "expo start --android",

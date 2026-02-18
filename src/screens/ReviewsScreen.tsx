@@ -22,6 +22,17 @@ import { useAuth } from '../context/AuthContext';
 import { usePropertyReviews, useCreateReview } from '../hooks/useReviews';
 import type { Review } from '../services/reviewService';
 
+interface ReviewDisplay {
+  id: string;
+  userId: string;
+  userName: string;
+  userAvatar?: string;
+  rating: number;
+  comment: string;
+  date: string;
+  helpful: number;
+}
+
 interface ReviewsScreenProps {
   navigation: any;
   route: {
@@ -143,7 +154,7 @@ const ReviewsScreen: React.FC<ReviewsScreenProps> = ({ navigation, route }) => {
     </View>
   );
 
-  const ReviewCard: React.FC<{ review: Review }> = ({ review }) => (
+  const ReviewCard: React.FC<{ review: ReviewDisplay }> = ({ review }) => (
     <View style={styles.reviewCard}>
       <View style={styles.reviewHeader}>
         {review.userAvatar ? (

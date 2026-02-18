@@ -59,7 +59,7 @@ export const INTEGRATIONS = {
 
 // Helper pour vérifier si une intégration est configurée
 export const isIntegrationEnabled = (name: keyof typeof INTEGRATIONS): boolean => {
-  const integration = INTEGRATIONS[name];
+  const integration = INTEGRATIONS[name] as { enabled?: boolean } | undefined;
   return integration?.enabled === true;
 };
 

@@ -121,7 +121,7 @@ export const getOrCreateConversation = async (
     }
 
     // Create new conversation
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('conversations')
       .insert({
         participant_1: userId1,
@@ -191,7 +191,7 @@ export const sendMessage = async (
   if (!isSupabaseConfigured()) return null;
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('messages')
       .insert({
         conversation_id: conversationId,
@@ -210,10 +210,11 @@ export const sendMessage = async (
     if (error) throw error;
 
     // Update conversation's last message
-    await supabase
+    const msg = data as Message;
+    await (supabase as any)
       .from('conversations')
       .update({
-        last_message_at: data.created_at,
+        last_message_at: msg.created_at,
         last_message_preview: content.substring(0, 100),
       })
       .eq('id', conversationId);
@@ -236,7 +237,7 @@ export const markMessagesAsRead = async (
 
   try {
     // Update message status
-    await supabase
+    await (supabase as any)
       .from('messages')
       .update({ 
         status: 'read',
@@ -315,13 +316,14 @@ export const subscribeToConversations = (
       },
       async (payload) => {
         // Fetch full conversation with relations
+        const newPayload = payload.new as { id: string };
         const { data } = await supabase
           .from('conversations')
           .select(`
             *,
             property:properties(id, title, images)
           `)
-          .eq('id', payload.new.id)
+          .eq('id', newPayload.id)
           .single();
 
         if (data) {

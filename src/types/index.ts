@@ -32,6 +32,7 @@ export interface Property {
   isFeatured: boolean;
   isAvailable: boolean;
   views: number;
+  yearBuilt?: number;
   // Virtual Tour
   virtualTourUrl?: string;
   virtualTourRooms?: VirtualTourRoom[];

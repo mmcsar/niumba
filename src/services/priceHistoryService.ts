@@ -71,7 +71,7 @@ export const addPriceHistoryEntry = async (
       throw new Error('User not authenticated');
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('price_history')
       .insert({
         property_id: propertyId,
@@ -120,7 +120,7 @@ export const getPriceStatistics = async (propertyId: string): Promise<{
       .eq('id', propertyId)
       .single();
 
-    const currentPrice = property?.price || history[0].price;
+    const currentPrice = (property as { price?: number } | null)?.price ?? history[0].price;
     const originalPrice = history[history.length - 1].price;
     const prices = history.map(h => h.price);
     const highestPrice = Math.max(...prices);

@@ -246,7 +246,7 @@ const AdminAppointmentsScreen: React.FC<AdminAppointmentsScreenProps> = ({ navig
             ? (isEnglish ? 'In Person' : 'En personne')
             : (isEnglish ? 'Video Call' : 'Appel vidéo')}
         </Text>
-        {appointment.visitType === 'video_call' && (
+        {(appointment.visitType === 'virtual' || (appointment as { visitType?: string }).visitType === 'video_call') && (
           <TouchableOpacity
             style={styles.videoCallButton}
             onPress={() => navigation.navigate('VideoCall', { appointmentId: appointment.id })}

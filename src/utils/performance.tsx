@@ -64,10 +64,10 @@ export function OptimizedFlatList<T extends { id: string | number }>({
   );
 
   // Get item layout for fixed height items (major performance boost)
-  const getItemLayout = useMemo(() => {
+  const getItemLayout = useMemo((): FlatListProps<T>['getItemLayout'] => {
     if (!itemHeight) return undefined;
 
-    return (_: T[] | null | undefined, index: number) => ({
+    return (data: ArrayLike<T> | null | undefined, index: number) => ({
       length: itemHeight,
       offset: itemHeight * index,
       index,
@@ -200,12 +200,12 @@ export const Skeleton: FC<SkeletonProps> = ({
     <Animated.View
       style={[
         {
-          width,
+          width: typeof width === 'string' ? width : width,
           height,
           borderRadius,
           backgroundColor: COLORS.border,
           opacity,
-        },
+        } as ViewStyle,
         style,
       ]}
     />
@@ -306,7 +306,7 @@ export function useDebouncedCallback<T extends (...args: any[]) => any>(
   callback: T,
   delay: number
 ): T {
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const callbackRef = useRef(callback);
 
   // Update callback ref on change
@@ -360,7 +360,7 @@ export function useThrottledCallback<T extends (...args: any[]) => any>(
 // ============================================
 
 export function usePrevious<T>(value: T): T | undefined {
-  const ref = useRef<T>();
+  const ref = useRef<T | undefined>(undefined);
 
   useEffect(() => {
     ref.current = value;
@@ -374,7 +374,7 @@ export function usePrevious<T>(value: T): T | undefined {
 // ============================================
 
 export function useIsMounted(): () => boolean {
-  const isMounted = useRef(true);
+  const isMounted = useRef<boolean>(true);
 
   useEffect(() => {
     isMounted.current = true;

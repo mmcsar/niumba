@@ -177,4 +177,16 @@ class AnalyticsService {
 // Instance singleton
 export const analytics = new AnalyticsService();
 
+// Named exports for index compatibility
+export const trackEvent = (event: AnalyticsEvent, properties?: AnalyticsProperties) =>
+  analytics.logEvent(event, properties);
+export const trackScreen = (screenName: string, properties?: AnalyticsProperties) =>
+  analytics.logScreenView(screenName, properties);
+export const trackPropertyView = (propertyId: string, propertyType?: string, price?: number) =>
+  analytics.logPropertyView(propertyId, propertyType, price);
+export const trackError = (error: Error | string, properties?: AnalyticsProperties) =>
+  analytics.logError(error, properties);
+export const startMeasure = (_name: string) => {};
+export const endMeasure = (_name: string) => {};
+
 export default analytics;

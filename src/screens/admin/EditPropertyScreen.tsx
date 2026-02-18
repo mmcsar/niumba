@@ -296,7 +296,7 @@ const EditPropertyScreen: React.FC<EditPropertyScreenProps> = ({ navigation, rou
       }
 
       // Update property
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('properties')
         .update({
           title: property.title,
@@ -315,7 +315,7 @@ const EditPropertyScreen: React.FC<EditPropertyScreenProps> = ({ navigation, rou
           status: property.status,
           images: finalImages,
           updated_at: new Date().toISOString(),
-        } as any)
+        })
         .eq('id', propertyId);
 
       if (error) throw error;

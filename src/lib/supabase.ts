@@ -8,10 +8,10 @@ import { Database } from '../types/database';
 // Utilise les variables d'environnement pour la sécurité
 // En développement : lit depuis .env
 // En production : utilise les secrets EAS
-const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL;
-const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? '';
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
+export const supabase = createClient<Database>(SUPABASE_URL || 'https://placeholder.supabase.co', SUPABASE_ANON_KEY || 'placeholder', {
   auth: {
     storage: AsyncStorage,
     autoRefreshToken: true,
@@ -22,7 +22,7 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, 
 
 // Helper to check if Supabase is configured
 export const isSupabaseConfigured = () => {
-  return !SUPABASE_URL.includes('YOUR_PROJECT_ID') && !SUPABASE_ANON_KEY.includes('YOUR_ANON_KEY');
+  return Boolean(SUPABASE_URL && SUPABASE_ANON_KEY && !SUPABASE_URL.includes('placeholder') && !SUPABASE_ANON_KEY.includes('placeholder'));
 };
 
 // Export for easy access

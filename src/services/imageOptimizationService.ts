@@ -5,6 +5,9 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
 
+const getCacheDirectory = (): string =>
+  (FileSystem as { cacheDirectory?: string }).cacheDirectory ?? '';
+
 // Image quality presets
 export const IMAGE_PRESETS = {
   thumbnail: { width: 150, quality: 0.6 },
@@ -220,7 +223,7 @@ export const preloadImages = async (urls: string[]): Promise<void> => {
       urls.map(async (url) => {
         try {
           const filename = url.split('/').pop() || 'image';
-          const cacheDir = `${FileSystem.cacheDirectory}images/`;
+          const cacheDir = `${getCacheDirectory()}images/`;
           const filePath = `${cacheDir}${filename}`;
           
           // Check if already cached
@@ -244,7 +247,7 @@ export const preloadImages = async (urls: string[]): Promise<void> => {
  */
 export const clearImageCache = async (): Promise<void> => {
   try {
-    const cacheDir = `${FileSystem.cacheDirectory}images/`;
+    const cacheDir = `${getCacheDirectory()}images/`;
     await FileSystem.deleteAsync(cacheDir, { idempotent: true });
   } catch (error) {
     console.error('Failed to clear image cache:', error);
@@ -256,7 +259,7 @@ export const clearImageCache = async (): Promise<void> => {
  */
 export const getImageCacheSize = async (): Promise<number> => {
   try {
-    const cacheDir = `${FileSystem.cacheDirectory}images/`;
+    const cacheDir = `${getCacheDirectory()}images/`;
     const dirInfo = await FileSystem.getInfoAsync(cacheDir);
     return (dirInfo as any).size || 0;
   } catch {

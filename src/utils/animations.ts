@@ -1,5 +1,6 @@
 // Niumba - Animation Utilities
 // Fonctions utilitaires pour les animations fluides
+import { useState, useCallback } from 'react';
 import { Animated, Easing } from 'react-native';
 
 /**
@@ -196,33 +197,4 @@ export const useSlideAnimation = (initialValue: number = -100) => {
   return { slideAnim, slideIn, slideOut };
 };
 
-import { useState, useCallback } from 'react';
-
-export {
-  fadeIn,
-  fadeOut,
-  slideInUp,
-  slideOutDown,
-  scaleIn,
-  scaleOut,
-  bounce,
-  shake,
-  pulse,
-  useFadeAnimation,
-  useSlideAnimation,
-};
-
-export default {
-  fadeIn,
-  fadeOut,
-  slideInUp,
-  slideOutDown,
-  scaleIn,
-  scaleOut,
-  bounce,
-  shake,
-  pulse,
-  useFadeAnimation,
-  useSlideAnimation,
-};
 

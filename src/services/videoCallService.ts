@@ -72,7 +72,7 @@ export const createVideoCall = async (
     }
 
     // Insert video call record
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('video_calls')
       .insert({
         appointment_id: appointmentId,
@@ -95,7 +95,7 @@ export const createVideoCall = async (
     }
 
     // Update appointment with video_url if it exists
-    const { error: updateError } = await supabase
+    const { error: updateError } = await (supabase as any)
       .from('appointments')
       .update({ video_url: meetingUrl })
       .eq('id', appointmentId);
@@ -106,7 +106,7 @@ export const createVideoCall = async (
 
     return data as VideoCall;
   } catch (error) {
-    errorLog('createVideoCall', error);
+    errorLog('createVideoCall', error instanceof Error ? error : new Error(String(error)));
     return null;
   }
 };
@@ -120,7 +120,7 @@ export const getVideoCallByAppointment = async (
   if (!isSupabaseConfigured()) return null;
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('video_calls')
       .select('*')
       .eq('appointment_id', appointmentId)
@@ -138,7 +138,7 @@ export const getVideoCallByAppointment = async (
 
     return data as VideoCall;
   } catch (error) {
-    errorLog('getVideoCallByAppointment', error);
+    errorLog('getVideoCallByAppointment', error instanceof Error ? error : new Error(String(error)));
     return null;
   }
 };
@@ -150,7 +150,7 @@ export const startVideoCall = async (videoCallId: string): Promise<boolean> => {
   if (!isSupabaseConfigured()) return false;
 
   try {
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from('video_calls')
       .update({
         status: 'active',
@@ -161,7 +161,7 @@ export const startVideoCall = async (videoCallId: string): Promise<boolean> => {
     if (error) throw error;
     return true;
   } catch (error) {
-    errorLog('startVideoCall', error);
+    errorLog('startVideoCall', error instanceof Error ? error : new Error(String(error)));
     return false;
   }
 };
@@ -173,7 +173,7 @@ export const endVideoCall = async (videoCallId: string): Promise<boolean> => {
   if (!isSupabaseConfigured()) return false;
 
   try {
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from('video_calls')
       .update({
         status: 'completed',
@@ -184,7 +184,7 @@ export const endVideoCall = async (videoCallId: string): Promise<boolean> => {
     if (error) throw error;
     return true;
   } catch (error) {
-    errorLog('endVideoCall', error);
+    errorLog('endVideoCall', error instanceof Error ? error : new Error(String(error)));
     return false;
   }
 };
@@ -196,7 +196,7 @@ export const cancelVideoCall = async (videoCallId: string): Promise<boolean> => 
   if (!isSupabaseConfigured()) return false;
 
   try {
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from('video_calls')
       .update({
         status: 'cancelled',
@@ -206,7 +206,7 @@ export const cancelVideoCall = async (videoCallId: string): Promise<boolean> => 
     if (error) throw error;
     return true;
   } catch (error) {
-    errorLog('cancelVideoCall', error);
+    errorLog('cancelVideoCall', error instanceof Error ? error : new Error(String(error)));
     return false;
   }
 };

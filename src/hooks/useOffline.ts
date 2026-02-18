@@ -158,16 +158,16 @@ export const useOffline = () => {
           
           switch (item.type) {
             case 'create':
-              result = await supabase.from(item.table).insert(item.data).select();
+              result = await (supabase as any).from(item.table).insert(item.data).select();
               break;
             case 'update':
-              result = await supabase
+              result = await (supabase as any)
                 .from(item.table)
                 .update(item.data)
                 .eq('id', item.data.id);
               break;
             case 'delete':
-              result = await supabase.from(item.table).delete().eq('id', item.data.id);
+              result = await (supabase as any).from(item.table).delete().eq('id', item.data.id);
               break;
           }
 

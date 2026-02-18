@@ -5,24 +5,28 @@ import { queue, TaskPriority } from './queueService';
 
 import { INTEGRATIONS } from '../config/integrations';
 
-// HubSpot Configuration
+// HubSpot Configuration (mutable so configureHubSpot can set values)
+const _hubspotConfig = {
+  apiKey: (INTEGRATIONS.hubspot as { apiKey?: string }).apiKey ?? '',
+  portalId: (INTEGRATIONS.hubspot as { portalId?: string }).portalId ?? '',
+};
 const HUBSPOT_CONFIG = {
-  get apiKey() { return INTEGRATIONS.hubspot.apiKey; },
-  get portalId() { return INTEGRATIONS.hubspot.portalId; },
+  get apiKey() { return _hubspotConfig.apiKey; },
+  get portalId() { return _hubspotConfig.portalId; },
   baseUrl: 'https://api.hubapi.com',
 };
 
 // Check if HubSpot is configured
 export const isHubSpotConfigured = () => {
-  return INTEGRATIONS.hubspot.enabled && 
-         INTEGRATIONS.hubspot.apiKey !== '' && 
-         INTEGRATIONS.hubspot.portalId !== '';
+  return INTEGRATIONS.hubspot.enabled &&
+         _hubspotConfig.apiKey !== '' &&
+         _hubspotConfig.portalId !== '';
 };
 
 // Configure HubSpot (call this at app startup)
 export const configureHubSpot = (apiKey: string, portalId: string) => {
-  HUBSPOT_CONFIG.apiKey = apiKey;
-  HUBSPOT_CONFIG.portalId = portalId;
+  _hubspotConfig.apiKey = apiKey;
+  _hubspotConfig.portalId = portalId;
 };
 
 // ============================================

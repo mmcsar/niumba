@@ -13,13 +13,13 @@ export type TableRow<T extends keyof Database['public']['Tables']> =
  * Type helper to get table insert type
  */
 export type TableInsert<T extends keyof Database['public']['Tables']> = 
-  Database['public']['Tables'][T]['Insert'];
+  Database['public']['Tables'][T] extends { Insert: infer I } ? I : Record<string, unknown>;
 
 /**
  * Type helper to get table update type
  */
 export type TableUpdate<T extends keyof Database['public']['Tables']> = 
-  Database['public']['Tables'][T]['Update'];
+  Database['public']['Tables'][T] extends { Update: infer U } ? U : Record<string, unknown>;
 
 /**
  * Assert that a value is a table row type

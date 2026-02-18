@@ -53,9 +53,9 @@ export const useCityProperties = () => {
 
           if (!rpcError && rpcData) {
             // Use RPC result
-            rpcData.forEach((row: any) => {
+            (rpcData as Array<{ city: string; property_count?: number; province?: string }>).forEach((row) => {
               cityCounts[row.city] = {
-                count: Number(row.property_count),
+                count: Number(row.property_count ?? 0),
                 province: row.province || 'Haut-Katanga',
               };
             });

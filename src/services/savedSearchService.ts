@@ -167,9 +167,9 @@ export const updateLastUsed = async (id: string): Promise<boolean> => {
     if (isSupabaseConfigured()) {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const { error } = await supabase
+        const { error } = await (supabase as any)
           .from('saved_searches')
-          .update({ last_used: new Date().toISOString() } as any)
+          .update({ last_used: new Date().toISOString() })
           .eq('id', id)
           .eq('user_id', user.id);
 

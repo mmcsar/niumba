@@ -130,7 +130,7 @@ export const savePushToken = async (userId: string, token: string): Promise<void
   }
 
   try {
-    await supabase
+    await (supabase as any)
       .from('profiles')
       .update({ push_token: token })
       .eq('id', userId);
@@ -394,7 +394,7 @@ export const markNotificationAsRead = async (
   if (!isSupabaseConfigured()) return false;
 
   try {
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from('notifications')
       .update({
         is_read: true,
@@ -420,7 +420,7 @@ export const markAllNotificationsAsRead = async (
   if (!isSupabaseConfigured()) return false;
 
   try {
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from('notifications')
       .update({
         is_read: true,

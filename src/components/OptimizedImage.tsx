@@ -67,12 +67,13 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
     return errorPlaceholder;
   }
 
+  const imageStyle = StyleSheet.flatten(style) as ImageStyle;
   return (
     <View style={style}>
       {loading && (placeholder || defaultPlaceholder)}
       <Image
         source={source}
-        style={[style, loading && styles.hidden]}
+        style={[imageStyle, loading && styles.hidden]}
         resizeMode={resizeMode}
         onLoadStart={handleLoadStart}
         onLoadEnd={handleLoadEnd}

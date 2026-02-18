@@ -50,7 +50,7 @@ export const getAlerts = async (userId: string): Promise<PropertyAlert[]> => {
   if (!isSupabaseConfigured()) return [];
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('property_alerts')
       .select('*')
       .eq('user_id', userId)
@@ -75,7 +75,7 @@ export const createAlert = async (
   if (!isSupabaseConfigured()) return null;
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('property_alerts')
       .insert({
         user_id: userId,
@@ -90,7 +90,7 @@ export const createAlert = async (
 
     // Check for matches immediately
     if (data) {
-      await checkAlertMatches(data.id);
+      await checkAlertMatches((data as PropertyAlert).id);
     }
 
     return data as PropertyAlert;
@@ -110,7 +110,7 @@ export const updateAlert = async (
   if (!isSupabaseConfigured()) return null;
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('property_alerts')
       .update({
         ...updates,
@@ -141,7 +141,7 @@ export const deleteAlert = async (alertId: string): Promise<boolean> => {
   if (!isSupabaseConfigured()) return false;
 
   try {
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from('property_alerts')
       .delete()
       .eq('id', alertId);
@@ -162,13 +162,14 @@ export const checkAlertMatches = async (alertId: string): Promise<number> => {
 
   try {
     // Get the alert
-    const { data: alert, error: alertError } = await supabase
+    const { data: alert, error: alertError } = await (supabase as any)
       .from('property_alerts')
       .select('*')
       .eq('id', alertId)
       .single();
 
-    if (alertError || !alert || !alert.enabled) return 0;
+    const alertRow = alert as PropertyAlert | null;
+    if (alertError || !alertRow || !alertRow.enabled) return 0;
 
     // Build query for matching properties
     let query = supabase
@@ -177,57 +178,57 @@ export const checkAlertMatches = async (alertId: string): Promise<number> => {
       .eq('status', 'active');
 
     // Apply filters
-    if (alert.property_type) {
-      query = query.eq('property_type', alert.property_type);
+    if (alertRow.property_type) {
+      query = query.eq('property_type', alertRow.property_type);
     }
 
-    if (alert.transaction_type) {
-      query = query.eq('transaction_type', alert.transaction_type);
+    if (alertRow.transaction_type) {
+      query = query.eq('transaction_type', alertRow.transaction_type);
     }
 
-    if (alert.min_price) {
-      query = query.gte('price', alert.min_price);
+    if (alertRow.min_price) {
+      query = query.gte('price', alertRow.min_price);
     }
 
-    if (alert.max_price) {
-      query = query.lte('price', alert.max_price);
+    if (alertRow.max_price) {
+      query = query.lte('price', alertRow.max_price);
     }
 
-    if (alert.min_bedrooms) {
-      query = query.gte('bedrooms', alert.min_bedrooms);
+    if (alertRow.min_bedrooms) {
+      query = query.gte('bedrooms', alertRow.min_bedrooms);
     }
 
-    if (alert.max_bedrooms) {
-      query = query.lte('bedrooms', alert.max_bedrooms);
+    if (alertRow.max_bedrooms) {
+      query = query.lte('bedrooms', alertRow.max_bedrooms);
     }
 
-    if (alert.min_bathrooms) {
-      query = query.gte('bathrooms', alert.min_bathrooms);
+    if (alertRow.min_bathrooms) {
+      query = query.gte('bathrooms', alertRow.min_bathrooms);
     }
 
-    if (alert.max_bathrooms) {
-      query = query.lte('bathrooms', alert.max_bathrooms);
+    if (alertRow.max_bathrooms) {
+      query = query.lte('bathrooms', alertRow.max_bathrooms);
     }
 
-    if (alert.min_area) {
-      query = query.gte('area', alert.min_area);
+    if (alertRow.min_area) {
+      query = query.gte('area', alertRow.min_area);
     }
 
-    if (alert.max_area) {
-      query = query.lte('area', alert.max_area);
+    if (alertRow.max_area) {
+      query = query.lte('area', alertRow.max_area);
     }
 
-    if (alert.city) {
-      query = query.eq('city', alert.city);
+    if (alertRow.city) {
+      query = query.eq('city', alertRow.city);
     }
 
-    if (alert.neighborhood) {
-      query = query.eq('neighborhood', alert.neighborhood);
+    if (alertRow.neighborhood) {
+      query = query.eq('neighborhood', alertRow.neighborhood);
     }
 
     // Only count properties created after last notification
-    if (alert.last_notified) {
-      query = query.gt('created_at', alert.last_notified);
+    if (alertRow.last_notified) {
+      query = query.gt('created_at', alertRow.last_notified);
     }
 
     const { count, error } = await query;
@@ -237,7 +238,7 @@ export const checkAlertMatches = async (alertId: string): Promise<number> => {
     const matchCount = count || 0;
 
     // Update alert with match count
-    await supabase
+    await (supabase as any)
       .from('property_alerts')
       .update({
         match_count: matchCount,
@@ -249,13 +250,13 @@ export const checkAlertMatches = async (alertId: string): Promise<number> => {
     // Send notification if there are new matches (only if not already notified)
     if (matchCount > 0) {
       // Only notify if this is the first check or if there are new matches since last notification
-      const shouldNotify = !alert.last_notified || matchCount > (alert.match_count || 0);
+      const shouldNotify = !alertRow.last_notified || matchCount > (alertRow.match_count || 0);
       
       if (shouldNotify) {
         try {
           await scheduleLocalNotification(
             'Nouvelles propriétés trouvées ! 🏠',
-            `${matchCount} nouvelle(s) propriété(s) correspond(ent) à votre alerte "${alert.name}"`,
+            `${matchCount} nouvelle(s) propriété(s) correspond(ent) à votre alerte "${alertRow.name}"`,
             { type: 'alert_match', alertId: alertId, matchCount }
           );
         } catch (notifError) {
@@ -278,13 +279,14 @@ export const getAlertMatches = async (alertId: string): Promise<any[]> => {
   if (!isSupabaseConfigured()) return [];
 
   try {
-    const { data: alert, error: alertError } = await supabase
+    const { data: alert, error: alertError } = await (supabase as any)
       .from('property_alerts')
       .select('*')
       .eq('id', alertId)
       .single();
 
-    if (alertError || !alert || !alert.enabled) return [];
+    const alertRow = alert as PropertyAlert | null;
+    if (alertError || !alertRow || !alertRow.enabled) return [];
 
     // Build query for matching properties
     let query = supabase
@@ -293,57 +295,57 @@ export const getAlertMatches = async (alertId: string): Promise<any[]> => {
       .eq('status', 'active');
 
     // Apply filters (same as checkAlertMatches)
-    if (alert.property_type) {
-      query = query.eq('property_type', alert.property_type);
+    if (alertRow.property_type) {
+      query = query.eq('property_type', alertRow.property_type);
     }
 
-    if (alert.transaction_type) {
-      query = query.eq('transaction_type', alert.transaction_type);
+    if (alertRow.transaction_type) {
+      query = query.eq('transaction_type', alertRow.transaction_type);
     }
 
-    if (alert.min_price) {
-      query = query.gte('price', alert.min_price);
+    if (alertRow.min_price) {
+      query = query.gte('price', alertRow.min_price);
     }
 
-    if (alert.max_price) {
-      query = query.lte('price', alert.max_price);
+    if (alertRow.max_price) {
+      query = query.lte('price', alertRow.max_price);
     }
 
-    if (alert.min_bedrooms) {
-      query = query.gte('bedrooms', alert.min_bedrooms);
+    if (alertRow.min_bedrooms) {
+      query = query.gte('bedrooms', alertRow.min_bedrooms);
     }
 
-    if (alert.max_bedrooms) {
-      query = query.lte('bedrooms', alert.max_bedrooms);
+    if (alertRow.max_bedrooms) {
+      query = query.lte('bedrooms', alertRow.max_bedrooms);
     }
 
-    if (alert.min_bathrooms) {
-      query = query.gte('bathrooms', alert.min_bathrooms);
+    if (alertRow.min_bathrooms) {
+      query = query.gte('bathrooms', alertRow.min_bathrooms);
     }
 
-    if (alert.max_bathrooms) {
-      query = query.lte('bathrooms', alert.max_bathrooms);
+    if (alertRow.max_bathrooms) {
+      query = query.lte('bathrooms', alertRow.max_bathrooms);
     }
 
-    if (alert.min_area) {
-      query = query.gte('area', alert.min_area);
+    if (alertRow.min_area) {
+      query = query.gte('area', alertRow.min_area);
     }
 
-    if (alert.max_area) {
-      query = query.lte('area', alert.max_area);
+    if (alertRow.max_area) {
+      query = query.lte('area', alertRow.max_area);
     }
 
-    if (alert.city) {
-      query = query.eq('city', alert.city);
+    if (alertRow.city) {
+      query = query.eq('city', alertRow.city);
     }
 
-    if (alert.neighborhood) {
-      query = query.eq('neighborhood', alert.neighborhood);
+    if (alertRow.neighborhood) {
+      query = query.eq('neighborhood', alertRow.neighborhood);
     }
 
     // Only get properties created after last notification
-    if (alert.last_notified) {
-      query = query.gt('created_at', alert.last_notified);
+    if (alertRow.last_notified) {
+      query = query.gt('created_at', alertRow.last_notified);
     }
 
     const { data, error } = await query.order('created_at', { ascending: false });
@@ -363,7 +365,7 @@ export const markAlertAsNotified = async (alertId: string): Promise<boolean> => 
   if (!isSupabaseConfigured()) return false;
 
   try {
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from('property_alerts')
       .update({
         last_notified: new Date().toISOString(),
@@ -387,7 +389,7 @@ export const checkAllUserAlerts = async (userId: string): Promise<number> => {
   if (!isSupabaseConfigured()) return 0;
 
   try {
-    const { data: alerts, error } = await supabase
+    const { data: alerts, error } = await (supabase as any)
       .from('property_alerts')
       .select('id')
       .eq('user_id', userId)
@@ -396,7 +398,7 @@ export const checkAllUserAlerts = async (userId: string): Promise<number> => {
     if (error) throw error;
 
     let totalMatches = 0;
-    for (const alert of alerts || []) {
+    for (const alert of (alerts || []) as { id: string }[]) {
       const matches = await checkAlertMatches(alert.id);
       totalMatches += matches;
     }
